@@ -3,14 +3,17 @@ package com.mcy.airhockey;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
 public class AirHockeyActivity extends AppCompatActivity {
 
     private GLSurfaceView mSurfaceView;
     private boolean renderSet = false;
+    private boolean renderRoam = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +30,58 @@ public class AirHockeyActivity extends AppCompatActivity {
             //request a es2.0 compatible context
             mSurfaceView.setEGLContextClientVersion(2);
 
-            AirHockeyRenderer mRenderer = new AirHockeyRenderer(this);
+            final AirHockeyRenderer mRenderer = new AirHockeyRenderer(this);
             mSurfaceView.setRenderer(mRenderer);
             renderSet = true;
+
+//            mSurfaceView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mRenderer.enableRoam(!renderRoam);
+//                    renderRoam = !renderRoam;
+//                }
+//            });
+
+            mSurfaceView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(event!=null){
+                        //从屏幕坐标转换到设备归一化坐标，y轴反转
+                        final float normalX = (event.getX()/(float)v.getWidth())*2-1;
+                        final float normalY = 1-(event.getY()/(float)v.getHeight())*2;
+                        switch (event.getAction()){
+                            case MotionEvent.ACTION_DOWN:
+                                //Android的UI运行在主线程，而GLSurfaceView运行在单独线程
+                                mSurfaceView.queueEvent(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mRenderer.handleTouchPress(normalX,normalY);
+                                    }
+                                });
+                                break;
+
+                            case MotionEvent.ACTION_MOVE:
+                                mSurfaceView.queueEvent(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mRenderer.handleTouchDrag(normalX,normalY);
+                                    }
+                                });
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                    return true;
+                }
+            });
         }else{
-            Toast.makeText(this,"system do not support opengles 2.0",Toast.LENGTH_LONG)
+            Toast.makeText(this,"system do not support openGLES 2.0",Toast.LENGTH_LONG)
                     .show();
         }
+
+
     }
 
     @Override

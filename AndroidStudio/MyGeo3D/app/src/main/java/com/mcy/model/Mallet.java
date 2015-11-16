@@ -1,4 +1,4 @@
-package com.mcy.airhockey.Model;
+package com.mcy.model;
 
 import com.mcy.glprogram.ColorShaderProgram;
 import com.mcy.util.Constants;
@@ -9,6 +9,7 @@ import static android.opengl.GLES20.*;
 /**
  * Created by 海 on 2015/11/11.
  */
+@Deprecated
 public class Mallet {
     private static final int POSITION_COMPONENT_COUNT = 2;
     private static final int COLOR_COMPONENT_COUNT = 3;
@@ -29,12 +30,6 @@ public class Mallet {
                 0,
                 program.getPositionLocation(),
                 POSITION_COMPONENT_COUNT,
-                STRIDE
-        );
-        vertexArray.setVertexAttributePointer(
-                POSITION_COMPONENT_COUNT,
-                program.getColorLocation(),
-                COLOR_COMPONENT_COUNT,
                 STRIDE
         );
     }

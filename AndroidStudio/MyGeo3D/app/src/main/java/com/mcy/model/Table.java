@@ -1,4 +1,4 @@
-package com.mcy.airhockey.Model;
+package com.mcy.model;
 
 import com.mcy.glprogram.TextureShaderProgram;
 import com.mcy.util.Constants;
