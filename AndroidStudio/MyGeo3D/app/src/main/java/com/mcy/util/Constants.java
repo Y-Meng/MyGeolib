@@ -6,5 +6,5 @@ package com.mcy.util;
 public class Constants {
 
     public final static int BYTE_PER_FLOAT =  4;
-    public static final int POSITION_COMPNENT_COUNT = 3;
+    public static final int POSITION_COMPONENT_COUNT = 3;
 }

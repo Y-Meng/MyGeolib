@@ -29,4 +29,16 @@ public class VertexArray {
         //指回 0 起始位置
         floatBuffer.position(0);
     }
+
+    /**
+     * 更新native数据
+     * @param vertexData 输入数据
+     * @param start      输入起点
+     * @param count      总步长
+     */
+    public void updateBuffer(float[] vertexData, int start, int count) {
+        floatBuffer.position(start);
+        floatBuffer.put(vertexData,start,count);
+        floatBuffer.position(0);
+    }
 }

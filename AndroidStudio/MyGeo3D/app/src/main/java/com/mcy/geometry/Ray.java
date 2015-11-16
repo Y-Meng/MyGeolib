@@ -8,9 +8,9 @@ import com.mcy.util.GeometryHelper;
  * Created by 海 on 2015/11/13.
  */
 public class Ray {
-    public final ObjectBuilder.Point point;
+    public final Point point;
     public final Vector vector;
-    public Ray(ObjectBuilder.Point point,Vector vector){
+    public Ray(Point point,Vector vector){
         this.point = point;
         this.vector = vector;
     }
@@ -20,8 +20,8 @@ public class Ray {
         final float[] invertedViewProjectMatrix = new float[16];
         Matrix.invertM(invertedViewProjectMatrix,0,viewProjectMatrix,0);
         //计算归一化设备二维点到三维空间射线
-        final float[] nearPointNdc = {normalX,normalY,-1,1};
-        final float[] farPointNdc = {normalX,normalY,1,1};
+        final float[] nearPointNdc = {normalX,normalY,-1f,1f};
+        final float[] farPointNdc = {normalX,normalY,1f,1f};
 
         final float[] nearPointWorld = new float[4];
         final float[] farPointWorld = new float[4];
@@ -32,11 +32,11 @@ public class Ray {
         divideByW(nearPointWorld);
         divideByW(farPointWorld);
 
-        ObjectBuilder.Point rayNearPoint = new ObjectBuilder.Point(
+        Point rayNearPoint = new Point(
                 nearPointWorld[0],
                 nearPointWorld[1],
                 nearPointWorld[2]);
-        ObjectBuilder.Point rayFarPoint = new ObjectBuilder.Point(
+        Point rayFarPoint = new Point(
                 farPointWorld[0],
                 farPointWorld[1],
                 farPointWorld[2]);

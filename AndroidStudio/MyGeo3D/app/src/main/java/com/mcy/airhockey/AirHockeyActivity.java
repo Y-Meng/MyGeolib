@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.mcy.util.GeometryHelper;
+
 public class AirHockeyActivity extends AppCompatActivity {
 
     private GLSurfaceView mSurfaceView;
@@ -47,8 +49,8 @@ public class AirHockeyActivity extends AppCompatActivity {
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event!=null){
                         //从屏幕坐标转换到设备归一化坐标，y轴反转
-                        final float normalX = (event.getX()/(float)v.getWidth())*2-1;
-                        final float normalY = 1-(event.getY()/(float)v.getHeight())*2;
+                        final float normalX = GeometryHelper.normalizeScreenX(event.getX(),v.getWidth());
+                        final float normalY = GeometryHelper.normalizeScreenY(event.getY(),v.getHeight());
                         switch (event.getAction()){
                             case MotionEvent.ACTION_DOWN:
                                 //Android的UI运行在主线程，而GLSurfaceView运行在单独线程

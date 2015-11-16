@@ -5,8 +5,8 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
-import com.mcy.geometry.ObjectBuilder;
 import com.mcy.geometry.Plane;
+import com.mcy.geometry.Point;
 import com.mcy.geometry.Ray;
 import com.mcy.geometry.Sphere;
 import com.mcy.geometry.Vector;
@@ -45,6 +45,7 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer,TouchHandler{
     private final float[] viewProjectionMatrix = new float[16];
     private final float[] modelViewProjectionMatrix = new float[16];
 
+
     private Table table;
     private ModMallet mallet;
     private ModPuck puck;
@@ -62,9 +63,9 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer,TouchHandler{
     private float detR = 0f;
 
     private boolean malletPressed = false;
-    private ObjectBuilder.Point blueMalletPosition;
-    private ObjectBuilder.Point previousMalletPosition;
-    private ObjectBuilder.Point puckPosition;
+    private Point blueMalletPosition;
+    private Point previousMalletPosition;
+    private Point puckPosition;
     private Vector puckVector;
 
     public AirHockeyRenderer(Context context){
@@ -78,8 +79,8 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer,TouchHandler{
         mallet = new ModMallet(0.08f,0.15f,256);
         puck = new ModPuck(0.06f,0.02f,256);
 
-        blueMalletPosition = new ObjectBuilder.Point(0f,mallet.height/2f,0.4f);
-        puckPosition = new ObjectBuilder.Point(0f,puck.height/2f,0f);
+        blueMalletPosition = new Point(0f,mallet.height/2f,0.4f);
+        puckPosition = new Point(0f,puck.height/2f,0f);
         puckVector = new Vector(0f,0f,0f);
 
         textureShaderProgram = new TextureShaderProgram(context);
@@ -92,11 +93,13 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer,TouchHandler{
         //surface发生变化时更改视窗大小
         GLES20.glViewport(0, 0, width, height);
         //计算透视矩阵
-        MatrixHelper.perspectiveMatrix(projectMatrix, 45, (float) width / (float) height, 1f, 0f);
+        MatrixHelper.perspectiveMatrix(projectMatrix, 45, (float) width / (float) height, 10f, 1f);
         //计算视图矩阵
         setLookAtM(viewMatrix, 0, 0f, 1.2f, 2.2f, 0f, 0f, 0f, 0f, 1f, 0f);
         //将视图模型和投影模型相乘
         multiplyMM(viewProjectionMatrix, 0, projectMatrix, 0, viewMatrix, 0);
+        //计算反转视图投影矩阵
+        //invertM(invertedViewProjectMatrix, 0, viewProjectionMatrix, 0);
     }
 
     private void positionTableInScene(){
@@ -109,7 +112,7 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer,TouchHandler{
     }
 
     private void positionObjectInScene(float x,float y,float z){
-        setIdentityM(modelMatrix,0);
+        setIdentityM(modelMatrix, 0);
         translateM(modelMatrix, 0, x, y, z);
         multiplyMM(modelViewProjectionMatrix,0,viewProjectionMatrix,0,modelMatrix,0);
     }
@@ -164,16 +167,21 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer,TouchHandler{
 
     @Override
     public void handleTouchPress(float normalX, float normalY) {
-        Ray ray = Ray.convertNormalized2DPointToRay(viewProjectionMatrix,normalX,normalY);
+
+        Ray ray = Ray.convertNormalized2DPointToRay(viewProjectionMatrix,normalX, normalY);
+        Log.w("Touch","touch:"+normalX+","+normalY+"->"
+                +ray.point.x+","
+                +ray.point.y+","
+                +ray.point.z);
+
         Sphere malletBoundingSphere = new Sphere(
-                new ObjectBuilder.Point(
-                        blueMalletPosition.x,
+                new Point(blueMalletPosition.x,
                         blueMalletPosition.y,
                         blueMalletPosition.z),
                 mallet.height/2f);
         //相交测试
         malletPressed = GeometryHelper.intersects(malletBoundingSphere, ray);
-        Log.w("Touch","On touch press intersection"+malletPressed);
+        Log.w("Touch","On touch press intersection:"+malletPressed);
     }
 
     @Override
@@ -182,11 +190,11 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer,TouchHandler{
             previousMalletPosition = blueMalletPosition;
             Ray ray = Ray.convertNormalized2DPointToRay(viewProjectionMatrix,normalX,normalY);
             Plane plane = new Plane(
-                    new ObjectBuilder.Point(0,0,0),
+                    new Point(0,0,0),
                     new Vector(0,1,0));
-            ObjectBuilder.Point touchedPoint = GeometryHelper.intersectionPoint(ray, plane);
+            Point touchedPoint = GeometryHelper.intersectionPoint(ray, plane);
             //增加碰撞检测
-            blueMalletPosition = new ObjectBuilder.Point(
+            blueMalletPosition = new Point(
                     GeometryHelper.clamp(touchedPoint.x,leftBound+mallet.radius,rightBound-mallet.radius),
                     mallet.height/2f,
                     GeometryHelper.clamp(touchedPoint.z,0f+mallet.radius,nearBound-mallet.radius));
@@ -204,7 +212,7 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer,TouchHandler{
             if(puckPosition.z<farBound+puck.radius||puckPosition.z>nearBound-puck.radius){
                 puckVector = new Vector(puckVector.x,puckVector.y,-puckVector.z);
             }
-            puckPosition = new ObjectBuilder.Point(
+            puckPosition = new Point(
                     GeometryHelper.clamp(puckPosition.x,leftBound+puck.radius,rightBound-puck.radius),
                     puckPosition.y,
                     GeometryHelper.clamp(puckPosition.z,farBound+puck.radius,nearBound-puck.radius)
@@ -215,4 +223,37 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer,TouchHandler{
             Log.w("Touch","On touch drag");
         }
     }
+    /////////
+//    public Ray convertNormalized2DPointToRay(float normalX,float normalY){
+//
+//        //计算归一化设备二维点到三维空间射线
+//        final float[] nearPointNdc = {normalX,normalY,-1f,1f};
+//        final float[] farPointNdc = {normalX,normalY,1f,1f};
+//
+//        final float[] nearPointWorld = new float[4];
+//        final float[] farPointWorld = new float[4];
+//
+//        Matrix.multiplyMV(nearPointWorld,0,invertedViewProjectMatrix,0,nearPointNdc,0);
+//        Matrix.multiplyMV(farPointWorld, 0, invertedViewProjectMatrix, 0, farPointNdc, 0);
+//
+//        divideByW(nearPointWorld);
+//        divideByW(farPointWorld);
+//
+//        Point rayNearPoint = new Point(
+//                nearPointWorld[0],
+//                nearPointWorld[1],
+//                nearPointWorld[2]);
+//        Point rayFarPoint = new Point(
+//                farPointWorld[0],
+//                farPointWorld[1],
+//                farPointWorld[2]);
+//
+//        return new Ray(rayNearPoint, GeometryHelper.vectorBetween(rayNearPoint, rayFarPoint));
+//    }
+//
+//    private void divideByW(float[] vector){
+//        vector[0] /= vector[3];
+//        vector[1] /= vector[3];
+//        vector[2] /= vector[3];
+//    }
 }

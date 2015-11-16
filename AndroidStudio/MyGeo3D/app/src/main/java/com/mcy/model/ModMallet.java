@@ -1,6 +1,7 @@
 package com.mcy.model;
 
 import com.mcy.geometry.ObjectBuilder;
+import com.mcy.geometry.Point;
 import com.mcy.glprogram.ColorShaderProgram;
 import com.mcy.glprogram.ShaderProgram;
 import com.mcy.util.Constants;
@@ -16,7 +17,7 @@ public class ModMallet extends Model {
 
     public ModMallet(float radius,float height,int numDivCirclePoints){
         ObjectBuilder.GeneratedData generatedData = ObjectBuilder.createMallet(
-                new ObjectBuilder.Point(0f,0f,0f),
+                new Point(0f,0f,0f),
                 radius,
                 height,
                 numDivCirclePoints);
@@ -32,7 +33,7 @@ public class ModMallet extends Model {
         vertexArray.setVertexAttributePointer(
                 0,
                 ((ColorShaderProgram)program).getPositionLocation(),
-                Constants.POSITION_COMPNENT_COUNT,
+                Constants.POSITION_COMPONENT_COUNT,
                 0);
     }
 }

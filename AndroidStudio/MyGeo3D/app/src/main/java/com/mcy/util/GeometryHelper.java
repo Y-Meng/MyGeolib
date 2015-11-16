@@ -1,6 +1,7 @@
 package com.mcy.util;
-import com.mcy.geometry.ObjectBuilder;
+
 import com.mcy.geometry.Plane;
+import com.mcy.geometry.Point;
 import com.mcy.geometry.Ray;
 import com.mcy.geometry.Sphere;
 import com.mcy.geometry.Vector;
@@ -31,28 +32,60 @@ public class GeometryHelper {
         return Math.min(max,Math.max(value,min));
     }
 
-    private static float distanceBetween(ObjectBuilder.Point point, Ray ray) {
+    private static float distanceBetween(Point point, Ray ray) {
 
         Vector p1ToPoint = vectorBetween(ray.point,point);
         Vector p2ToPoint = vectorBetween(ray.point.translate(ray.vector),point);
 
         float areaOfTriangleTimesTwo = p1ToPoint.crossProduct(p2ToPoint).length();
-        float lenghtOfBase = ray.vector.length();
+        float lengthOfBase = ray.vector.length();
 
-        float distanceFromPointToRay = areaOfTriangleTimesTwo/lenghtOfBase;
+        float distanceFromPointToRay = areaOfTriangleTimesTwo/lengthOfBase;
         return distanceFromPointToRay;
     }
 
-    public static Vector vectorBetween(ObjectBuilder.Point from,ObjectBuilder.Point to){
+    /**
+     * 计算两点之间向量
+     * @param from
+     * @param to
+     * @return
+     */
+    public static Vector vectorBetween(Point from,Point to){
         return new Vector(to.x-from.x,to.y-from.y,to.z-from.z);
     }
 
-    public static ObjectBuilder.Point intersectionPoint(Ray ray, Plane plane) {
+    /**
+     * 计算射线与平面相交点
+     * @param ray
+     * @param plane
+     * @return
+     */
+    public static Point intersectionPoint(Ray ray, Plane plane) {
 
         Vector rayToPlaneVector = vectorBetween(ray.point,plane.point);
         float scaleFactor = rayToPlaneVector.dotProduct(plane.normal)
                 /ray.vector.dotProduct(plane.normal);
-        ObjectBuilder.Point intersectionPoint = ray.point.translate(ray.vector.scale(scaleFactor));
+        Point intersectionPoint = ray.point.translate(ray.vector.scale(scaleFactor));
         return intersectionPoint;
+    }
+
+    /**
+     * 计算X轴归一化坐标
+     * @param x
+     * @param width
+     * @return
+     */
+    public static float normalizeScreenX(float x,float width){
+        return 2*x/width - 1f;
+    }
+
+    /**
+     * 计算X轴归一化坐标
+     * @param y
+     * @param height
+     * @return
+     */
+    public static float normalizeScreenY(float y,float height){
+        return 1f - 2*y/height;
     }
 }

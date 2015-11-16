@@ -9,48 +9,6 @@ import java.util.List;
  * Created by 海 on 2015/11/12.
  */
 public class ObjectBuilder {
-    public static class Point{
-        public final float x,y,z;
-        public Point(float x,float y,float z){
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        public Point translateY(float distance){
-            return new Point(x,y+distance,z);
-        }
-        public Point translate(Vector v){
-            return new Point(
-                    x+v.x,
-                    y+v.y,
-                    z+v.z
-            );
-        }
-    }
-
-    public static class Circle{
-        public final float radius;
-        public final Point center;
-        public Circle(Point center,float radius){
-            this.center = center;
-            this.radius = radius;
-        }
-        public Circle scale(float scale){
-            return new Circle(center,radius*scale);
-        }
-    }
-
-    public static class Cylinder{
-        public final float radius;
-        public final float height;
-        public final Point center;
-        public Cylinder(Point center,float radius,float height){
-            this.center = center;
-            this.radius = radius;
-            this.height = height;
-        }
-    }
 
     public static class GeneratedData{
         public final float[] vertexData;
