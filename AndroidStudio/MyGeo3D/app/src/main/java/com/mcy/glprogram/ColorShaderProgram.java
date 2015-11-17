@@ -44,4 +44,13 @@ public class ColorShaderProgram extends ShaderProgram {
         return aPositionLocation;
     }
 
+    @Override
+    public void initUniformsLocation() {
+
+    }
+
+    @Override
+    public void initAttributesLocation() {
+
+    }
 }

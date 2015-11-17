@@ -14,7 +14,7 @@ import com.mcy.util.VertexArray;
 import static android.opengl.GLES20.glDrawArrays;
 
 /**
- * Created by 海 on 2015/11/16.
+ * Created by gis on 2015/11/16.
  */
 public class ParticleSystem extends Model{
     private static final int POSITION_COMPONENT_COUNT = 3;

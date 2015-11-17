@@ -4,9 +4,14 @@ import android.content.Context;
 
 import com.mcy.mygeo3d.R;
 
+import static android.opengl.GLES20.GL_TEXTURE0;
+import static android.opengl.GLES20.GL_TEXTURE_2D;
+import static android.opengl.GLES20.glActiveTexture;
+import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniform1f;
+import static android.opengl.GLES20.glUniform1i;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 
 /**
@@ -17,6 +22,7 @@ public class ParticleShaderProgram extends ShaderProgram {
     //uniform names
     private static final String U_MATRIX = "u_Matrix";
     private static final String U_TIME = "u_Time";
+    private static final String U_TEXTURE_UNIT = "u_TextureUnit";
 
     //attribute names
     private static final String A_POSITION = "a_Position";
@@ -27,6 +33,7 @@ public class ParticleShaderProgram extends ShaderProgram {
     //uniform and attribute location
     private final int uMatrixLocation;
     private final int uTimeLocation;
+    private final int uTextureUnitLocation;
 
     private final int aPositionLocation;
     private final int aColorLocation;
@@ -38,6 +45,7 @@ public class ParticleShaderProgram extends ShaderProgram {
         //获取参数位置
         uMatrixLocation = glGetUniformLocation(program,U_MATRIX);
         uTimeLocation = glGetUniformLocation(program,U_TIME);
+        uTextureUnitLocation = glGetUniformLocation(program,U_TEXTURE_UNIT);
 
         aPositionLocation = glGetAttribLocation(program,A_POSITION);
         aColorLocation = glGetAttribLocation(program,A_COLOR);
@@ -45,9 +53,13 @@ public class ParticleShaderProgram extends ShaderProgram {
         aParticleStartTimeLocation = glGetAttribLocation(program,A_PARTICLE_START_TIME);
     }
 
-    public void setUniforms(float[] matrix,float time){
-        glUniformMatrix4fv(uMatrixLocation,1,false,matrix,0);
-        glUniform1f(uTimeLocation,time);
+    public void setUniforms(float[] matrix,float time,int textureID){
+        glUniformMatrix4fv(uMatrixLocation, 1, false, matrix, 0);
+        glUniform1f(uTimeLocation, time);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,textureID);
+        glUniform1i(uTimeLocation,0);
     }
 
     public int getaPositionLocation(){
@@ -64,5 +76,15 @@ public class ParticleShaderProgram extends ShaderProgram {
 
     public int getaParticleStartTimeLocation(){
         return aParticleStartTimeLocation;
+    }
+
+    @Override
+    public void initUniformsLocation() {
+
+    }
+
+    @Override
+    public void initAttributesLocation() {
+
     }
 }

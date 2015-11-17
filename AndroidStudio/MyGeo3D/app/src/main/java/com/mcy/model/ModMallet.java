@@ -33,7 +33,7 @@ public class ModMallet extends Model {
         vertexArray.setVertexAttributePointer(
                 0,
                 ((ColorShaderProgram)program).getPositionLocation(),
-                Constants.POSITION_COMPONENT_COUNT,
+                Constants.POSITION_3D,
                 0);
     }
 }
