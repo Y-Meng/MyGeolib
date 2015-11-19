@@ -13,7 +13,7 @@ public abstract class ShaderProgram {
     //shader program
     protected final int program;
 
-    protected ShaderProgram(Context context,int vsResID,int fsResID){
+    public ShaderProgram(Context context,int vsResID,int fsResID){
         program = ShaderHelper.buildProgram(
                 ShaderHelper.readTextShaderFromResource(context,vsResID),
                 ShaderHelper.readTextShaderFromResource(context,fsResID));

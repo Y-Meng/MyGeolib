@@ -8,12 +8,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.mcy.airhockey.AirHockeyActivity;
 import com.mcy.particles.ParticlesActivity;
 
 public class GLFeatureActivity extends AppCompatActivity {
 
     private ListView lvMenu;
-    private String[] menus = {"粒子效果","天空盒"};
+    private String[] menus = {"粒子效果","三维桌球"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class GLFeatureActivity extends AppCompatActivity {
                         startActivity(new Intent(GLFeatureActivity.this,ParticlesActivity.class));
                         break;
                     case 1:
+                        startActivity(new Intent(GLFeatureActivity.this, AirHockeyActivity.class));
                         break;
                     case 2:
                         break;

@@ -8,8 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.mcy.mygeo3d.R;
-
 public class ParticlesActivity extends AppCompatActivity {
 
     private GLSurfaceView mSurfaceView;
@@ -18,8 +16,11 @@ public class ParticlesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_particles);
-        mSurfaceView = (GLSurfaceView)findViewById(R.id.glView);
+//        setContentView(R.layout.activity_particles);
+//        mSurfaceView = (GLSurfaceView)findViewById(R.id.glView);
+
+        mSurfaceView = new GLSurfaceView(this);
+        setContentView(mSurfaceView);
 
         //check is system support gles 2.0
         final ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);

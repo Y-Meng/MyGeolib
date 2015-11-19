@@ -30,4 +30,8 @@ public class Vector {
                 y*f,z*f
         );
     }
+
+    public Vector normalize() {
+        return scale(1f/length());
+    }
 }
